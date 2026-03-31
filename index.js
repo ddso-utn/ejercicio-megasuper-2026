@@ -1,4 +1,4 @@
-import { DescuentoFijo, DescuentoPorcentual, Producto } from "./domain.js";
+import { DescuentoFijo, DescuentoPorcentual, DescuentoPorCantidad, Producto } from "./domain.js";
 import {
   aumentarPrecioBase,
   obtenerPrecioTotal,

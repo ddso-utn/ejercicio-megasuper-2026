@@ -72,19 +72,13 @@ export class DescuentoPorcentual {
 }
 
 export class DescuentoPorCantidad {
-  constructor(cantidadQueCompras, cantidadQuePagas) {
-    this.cantidadQueCompras = cantidadQueCompras; 
-    this.cantidadQuePagas = cantidadQuePagas;     
+  constructor(cantidadComprada, cantidadPagada) {
+    this.cantidadComprada = cantidadComprada
+    this.cantidadPagada = cantidadPagada
   }
 
   valorDescontado(producto) {
-    const gruposCompletos = Math.floor(
-      producto.cantidad / this.cantidadQueCompras
-    );
-    
-    const itemsRestantes = producto.cantidad % this.cantidadQueCompras;
-    const unidadesAhorradas = gruposCompletos * (this.cantidadQueCompras - this.cantidadQuePagas);
-    
-    return unidadesAhorradas * producto.precio;
+    const unidadesPagadas = Math.floor(cantidad / this.cantidadComprada) * this.cantidadPagada + producto.cantidad % this.cantidadComprada;
+    return unidadesPagadas * producto.precio;
   }
 }

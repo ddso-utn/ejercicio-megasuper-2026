@@ -27,7 +27,7 @@ export class ProductoRepository {
     }
 
     guardar(producto) {
-        this.#validarProducto(producto)
+        this.validarProducto(producto)
 
         const id = producto.id ?? this.nextId++
         producto.id = id
@@ -45,13 +45,13 @@ export class ProductoRepository {
     }
 
     obtenerPorId(id) {
-        this.#validarId(id)
+        this.validarId(id)
 
         return this.productos[id] ?? null
     }
 
     obtenerPorNombre(nombre) {
-        this.#validarNombre(nombre)
+        this.validarNombre(nombre)
         const nombreNormalizado = nombre.trim().toLowerCase()
 
         return (
@@ -62,7 +62,7 @@ export class ProductoRepository {
     }
 
     eliminar(id) {
-        this.#validarId(id)
+        this.validarId(id)
 
         const productoAEliminar = this.productos[id]
 
@@ -74,19 +74,19 @@ export class ProductoRepository {
         return productoAEliminar
     }
 
-    #validarProducto(producto) {
+    validarProducto(producto) {
         if (!(producto instanceof Producto)) {
             throw new UnprocessableEntityError("El producto es inválido")
         }
     }
 
-    #validarId(id) {
+    validarId(id) {
         if (!Number.isInteger(id) || id <= 0) {
             throw new BadRequestError("El id no es válido")
         }
     }
 
-    #validarNombre(nombre) {
+    validarNombre(nombre) {
         if (typeof nombre !== "string" || nombre.trim().length === 0) {
             throw new BadRequestError("El nombre del producto es obligatorio")
         }

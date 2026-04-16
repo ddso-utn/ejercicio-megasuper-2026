@@ -9,10 +9,10 @@ export class Producto {
   descuentos;
 
   constructor(nombre, precio, cantidad, categoria) {
-    this.#validarNombre(nombre);
-    this.#validarPrecio(precio);
-    this.#validarCantidad(cantidad);
-    this.#validarCategoria(categoria);
+    this.validarNombre(nombre);
+    this.validarPrecio(precio);
+    this.validarCantidad(cantidad);
+    this.validarCategoria(categoria);
 
     this.nombre = nombre.trim();
     this.precio = precio;
@@ -49,25 +49,25 @@ export class Producto {
     this.agregarDescuento(nuevoDescuento);
   }
 
-  #validarNombre(nombre) {
+  validarNombre(nombre) {
     if (typeof nombre !== "string" || nombre.trim().length === 0) {
       throw new UnprocessableEntityError("El nombre del producto es obligatorio");
     }
   }
 
-  #validarPrecio(precio) {
+  validarPrecio(precio) {
     if (!Number.isFinite(precio) || precio <= 0) {
       throw new UnprocessableEntityError("El precio debe ser un número mayor a 0");
     }
   }
 
-  #validarCantidad(cantidad) {
+  validarCantidad(cantidad) {
     if (!Number.isInteger(cantidad) || cantidad <= 0) {
       throw new UnprocessableEntityError("La cantidad debe ser un entero mayor a 0");
     }
   }
 
-  #validarCategoria(categoria) {
+  validarCategoria(categoria) {
     if (typeof categoria !== "string" || categoria.trim().length === 0) {
       throw new UnprocessableEntityError("La categoría del producto es obligatoria");
     }

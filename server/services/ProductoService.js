@@ -13,16 +13,14 @@ export class ProductoService {
 
     // Numero y limite, si no están 1 o 10 respectivamente y si se pasa undefined {}
     obtenerTodos({ numeroPagina = 1, limitePorPagina = 10 } = {}) {
-        this.#validarPaginacion(numeroPagina, limitePorPagina)
+        this.validarPaginacion(numeroPagina, limitePorPagina)
 
         const { productos, totalProductos } = this.productoRepository.obtenerPaginados(
             numeroPagina,
             limitePorPagina
         )
 
-        const totalPaginas = totalProductos === 0
-            ? 0
-            : Math.ceil(totalProductos / limitePorPagina)
+        const totalPaginas = totalProductos === 0 ? 0 : Math.ceil(totalProductos / limitePorPagina)
 
         return {
             productos,
@@ -34,7 +32,7 @@ export class ProductoService {
     }
 
     obtenerPorId(id) {
-        this.#validarEnteroPositivo(id, "Id")
+        this.validarEnteroPositivo(id, "Id")
 
         const producto = this.productoRepository.obtenerPorId(id)
 
@@ -46,8 +44,8 @@ export class ProductoService {
     }
 
     crear(datosProducto) {
-        this.#validarDatosProducto(datosProducto)
-        this.#validarNombreDisponible(datosProducto.nombre)
+        this.validarDatosProducto(datosProducto)
+        this.validarNombreDisponible(datosProducto.nombre)
 
         const producto = new Producto(
             datosProducto.nombre,
@@ -60,12 +58,12 @@ export class ProductoService {
     }
 
     actualizar(id, datosProducto) {
-        this.#validarEnteroPositivo(id, "Id")
+        this.validarEnteroPositivo(id, "Id")
 
-        this.#validarDatosProducto(datosProducto)
+        this.validarDatosProducto(datosProducto)
 
         const productoExistente = this.obtenerPorId(id)
-        this.#validarNombreDisponible(datosProducto.nombre, id)
+        this.validarNombreDisponible(datosProducto.nombre, id)
 
         const productoActualizado = new Producto(
             datosProducto.nombre,
@@ -79,13 +77,13 @@ export class ProductoService {
     }
 
     eliminar(id) {
-        this.#validarEnteroPositivo(id, "Id")
+        this.validarEnteroPositivo(id, "Id")
         this.obtenerPorId(id)
 
         return this.productoRepository.eliminar(id)
     }
 
-    #validarDatosProducto(datosProducto) {
+    validarDatosProducto(datosProducto) {
         if (!datosProducto || typeof datosProducto !== "object" || Array.isArray(datosProducto)) {
             throw new BadRequestError("Los datos del producto son inválidos")
         }
@@ -109,7 +107,7 @@ export class ProductoService {
         }
     }
 
-    #validarNombreDisponible(nombre, idActual = null) {
+    validarNombreDisponible(nombre, idActual = null) {
         const productoExistente = this.productoRepository.obtenerPorNombre(nombre)
         const existeProductoConMismoNombre = productoExistente && productoExistente.id !== idActual
 
@@ -118,12 +116,12 @@ export class ProductoService {
         }
     }
 
-    #validarPaginacion(numeroPagina, limitePorPagina) {
-        this.#validarEnteroPositivo(numeroPagina, "Numero de página")
-        this.#validarEnteroPositivo(limitePorPagina, "Límite por página")
+    validarPaginacion(numeroPagina, limitePorPagina) {
+        this.validarEnteroPositivo(numeroPagina, "Numero de página")
+        this.validarEnteroPositivo(limitePorPagina, "Límite por página")
     }
 
-    #validarEnteroPositivo(numero, parametro) {
+    validarEnteroPositivo(numero, parametro) {
         if (!Number.isInteger(numero) || numero <= 0) {
             throw new BadRequestError(`${parametro} debe ser un entero positivo`)
         }

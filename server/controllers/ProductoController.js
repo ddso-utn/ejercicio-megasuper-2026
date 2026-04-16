@@ -11,9 +11,9 @@ export class ProductoController {
         this.productoService = productoService
     }
 
-    findAll = async (req, res, next) => {
+    findAll = async (req, res) => {
         try {
-            const paginacion = this.#extraerPaginacion(req.query) // Obtengo número de página y limite por página
+            const paginacion = this.extraerPaginacion(req.query) // Obtengo número de página y limite por página
             const resultado = this.productoService.obtenerTodos(paginacion)
 
             return res.status(200).json({
@@ -27,64 +27,64 @@ export class ProductoController {
                 }
             })
         } catch (error) {
-            return this.#manejarError(res, error)
+            return this.manejarError(res, error)
         }
     }
 
-    create = async (req, res, next) => {
+    create = async (req, res) => {
         try {
-            const datosProducto = this.#extraerYValidarBodyProducto(req.body)
+            const datosProducto = this.extraerYValidarBodyProducto(req.body)
             const productoCreado = this.productoService.crear(datosProducto)
 
             return res.status(201).json({ status: "success", data: productoCreado })
         } catch (error) {
-            return this.#manejarError(res, error)
+            return this.manejarError(res, error)
         }
     }
 
-    findById = async (req, res, next) => {
+    findById = async (req, res) => {
         try {
-            const id = this.#parsearId(req.params.id)
+            const id = this.parsearId(req.params.id)
             const producto = this.productoService.obtenerPorId(id)
 
             return res.status(200).json({ status: "success", data: producto })
         } catch (error) {
-            return this.#manejarError(res, error)
+            return this.manejarError(res, error)
         }
     }
 
-    update = async (req, res, next) => {
+    update = async (req, res) => {
         try {
-            const id = this.#parsearId(req.params.id)
-            const datosProducto = this.#extraerYValidarBodyProducto(req.body)
+            const id = this.parsearId(req.params.id)
+            const datosProducto = this.extraerYValidarBodyProducto(req.body)
             const productoActualizado = this.productoService.actualizar(id, datosProducto)
 
             return res.status(200).json({ status: "success", data: productoActualizado })
         } catch (error) {
-            return this.#manejarError(res, error)
+            return this.manejarError(res, error)
         }
     }
 
-    delete = async (req, res, next) => {
+    delete = async (req, res) => {
         try {
-            const id = this.#parsearId(req.params.id)
+            const id = this.parsearId(req.params.id)
             const productoEliminado = this.productoService.eliminar(id)
 
             return res.status(200).json({ status: "success", data: productoEliminado })
         } catch (error) {
-            return this.#manejarError(res, error)
+            return this.manejarError(res, error)
         }
     }
 
-    #parsearId(idParam) {
+    parsearId(idParam) {
         const id = Number(idParam)
 
-        this.#validarEnteroPositivo(id, "id")
+        this.validarEnteroPositivo(id, "id")
 
         return id
     }
 
-    #extraerYValidarBodyProducto(body) {
+    extraerYValidarBodyProducto(body) {
         if (!body || typeof body !== "object" || Array.isArray(body)) {
             throw new BadRequestError("El cuerpo de la request es inválido")
         }
@@ -111,23 +111,23 @@ export class ProductoController {
         }
     }
 
-    #extraerPaginacion(query) {
+    extraerPaginacion(query) {
         const numeroPagina = query?.page === undefined ? 1 : Number(query.page)
         const limitePorPagina = query?.limit === undefined ? 10 : Number(query.limit)
 
-        this.#validarEnteroPositivo(numeroPagina, "page")
-        this.#validarEnteroPositivo(limitePorPagina, "limit")
+        this.validarEnteroPositivo(numeroPagina, "page")
+        this.validarEnteroPositivo(limitePorPagina, "limit")
 
         return { numeroPagina, limitePorPagina }
     }
 
-    #validarEnteroPositivo(numero, parametro) {
+    validarEnteroPositivo(numero, parametro) {
         if (!Number.isInteger(numero) || numero <= 0) {
             throw new BadRequestError(`El parámetro ${parametro} debe ser un entero positivo`)
         }
     }
 
-    #manejarError(res, error) {
+    manejarError(res, error) {
         const message = error?.message || "Error interno"
         const timestamp = error?.timestamp || new Date().toISOString()
 

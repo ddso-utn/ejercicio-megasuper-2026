@@ -1,28 +1,9 @@
-import express from "express";
+import app from "./app.js"
+import dotenv from "dotenv"
 
-export class Server {
-    #app;
+const port = process.env.PORT || 3000
+const host = 'localhost'
 
-    constructor(app, port) {
-        this.#app = app;
-        this.port = port;
-    }
-
-    get app() {
-        return this.#app;
-    }
-
-    configureRouters(routers) {
-        routers.forEach(router => this.#app.use(router));
-
-        this.#app.use((req, res) => {
-            res.status(404).json({ status: "fail", message: "La ruta solicitada no existe" });
-        });
-    }
-
-    launch() {
-        this.#app.listen(this.port, () => {
-            console.log(`Server running on port ${this.port}`);
-        });
-    }
-}
+app.listen(port, host, () => {
+  console.log(`🚀 Servidor corriendo en http://${host}:${port}`);
+});

@@ -5,10 +5,13 @@ import {
     NotFoundError,
     UnprocessableEntityError
 } from "../errors/AppError.js"
+import { ProductoRepository } from "../repositories/ProductoRepository.js";
 
 export class ProductoService {
-    constructor(productoRepository) {
-        this.productoRepository = productoRepository
+    constructor({
+        productoRepository = new ProductoRepository()
+    } = {}) {
+        this.productoRepository = productoRepository;
     }
 
     // Numero y limite, si no están 1 o 10 respectivamente y si se pasa undefined {}

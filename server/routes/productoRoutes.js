@@ -3,9 +3,7 @@ import { ProductoController } from "../controllers/ProductoController.js"
 import { ProductoService } from "../services/ProductoService.js"
 import { ProductoRepository } from "../repositories/ProductoRepository.js"
 
-const productoController = new ProductoController(
-	new ProductoService(new ProductoRepository())
-)
+const productoController = new ProductoController()
 
 const router = express.Router()
 

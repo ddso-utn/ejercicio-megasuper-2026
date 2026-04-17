@@ -5,11 +5,15 @@ import {
     NotFoundError,
     UnprocessableEntityError
 } from "../errors/AppError.js"
+import { ProductoService } from "../services/ProductoService.js";
 
 export class ProductoController {
-    constructor(productoService) {
-        this.productoService = productoService
+    constructor({
+        productoService = new ProductoService()
+    } = {}) {
+        this.productoService = productoService;
     }
+
 
     findAll = async (req, res) => {
         try {

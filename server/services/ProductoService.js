@@ -15,12 +15,14 @@ export class ProductoService {
     }
 
     // Numero y limite, si no están 1 o 10 respectivamente y si se pasa undefined {}
-    obtenerTodos({ numeroPagina = 1, limitePorPagina = 10 } = {}) {
+    obtenerTodos({ numeroPagina = 1, limitePorPagina = 10, filtros = {} } = {}) {
         this.validarPaginacion(numeroPagina, limitePorPagina)
+        this.validarFiltros(filtros)
 
         const { productos, totalProductos } = this.productoRepository.obtenerPaginados(
             numeroPagina,
-            limitePorPagina
+            limitePorPagina,
+            filtros
         )
 
         const totalPaginas = totalProductos === 0 ? 0 : Math.ceil(totalProductos / limitePorPagina)
@@ -58,6 +60,20 @@ export class ProductoService {
         )
 
         return this.productoRepository.guardar(producto)
+    }
+
+    crearVarios(listaProductos) {
+        if (!Array.isArray(listaProductos) || listaProductos.length === 0) {
+            throw new BadRequestError("Debe enviar una lista de productos no vacía")
+        }
+
+        const productos = listaProductos.map((datos) => {
+            this.validarDatosProducto(datos)
+            this.validarNombreDisponible(datos.nombre)
+            return new Producto(datos.nombre, datos.precio, datos.cantidad, datos.categoria)
+        })
+
+        return this.productoRepository.guardarTodos(productos)
     }
 
     actualizar(id, datosProducto) {
@@ -116,6 +132,21 @@ export class ProductoService {
 
         if (existeProductoConMismoNombre) {
             throw new ConflictError("Ya existe un producto con el mismo nombre")
+        }
+    }
+
+    validarFiltros({ precioMin, precioMax, categoria } = {}) {
+        if (precioMin !== undefined && precioMin <= 0) {
+            throw new BadRequestError("precioMin debe ser mayor a 0")
+        }
+        if (precioMax !== undefined && precioMax <= 0) {
+            throw new BadRequestError("precioMax debe ser mayor a 0")
+        }
+        if (precioMin !== undefined && precioMax !== undefined && precioMin > precioMax) {
+            throw new BadRequestError("precioMin no puede ser mayor que precioMax")
+        }
+        if (categoria !== undefined && (typeof categoria !== "string" || categoria.trim().length === 0)) {
+            throw new BadRequestError("La categoría debe ser una cadena de texto no vacía")
         }
     }
 

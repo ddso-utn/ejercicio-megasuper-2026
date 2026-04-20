@@ -15,14 +15,26 @@ export class ProductoRepository {
         return Object.values(this.productos)
     }
 
-    obtenerPaginados(numeroPagina, limitePorPagina) {
-        const todosLosProductos = Object.values(this.productos)
+    obtenerPaginados(numeroPagina, limitePorPagina, filtros = {}) {
+        let productos = Object.values(this.productos)
+
+        if (filtros.precioMin !== undefined) {
+            productos = productos.filter((p) => p.precio >= filtros.precioMin)
+        }
+        if (filtros.precioMax !== undefined) {
+            productos = productos.filter((p) => p.precio <= filtros.precioMax)
+        }
+        if (filtros.categoria !== undefined) {
+            const categoriaNormalizada = filtros.categoria.trim().toLowerCase()
+            productos = productos.filter((p) => p.categoria.trim().toLowerCase() === categoriaNormalizada)
+        }
+
         const inicio = (numeroPagina - 1) * limitePorPagina
         const fin = inicio + limitePorPagina
 
         return {
-            productos: todosLosProductos.slice(inicio, fin),
-            totalProductos: todosLosProductos.length
+            productos: productos.slice(inicio, fin),
+            totalProductos: productos.length
         }
     }
 

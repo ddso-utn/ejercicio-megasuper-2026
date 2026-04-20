@@ -17,8 +17,9 @@ export class ProductoController {
 
     findAll = async (req, res) => {
         try {
-            const paginacion = this.extraerPaginacion(req.query) // Obtengo número de página y limite por página
-            const resultado = this.productoService.obtenerTodos(paginacion)
+            const paginacion = this.extraerPaginacion(req.query)
+            const filtros = this.extraerFiltros(req.query)
+            const resultado = this.productoService.obtenerTodos({ ...paginacion, filtros })
 
             return res.status(200).json({
                 status: "success",
@@ -69,6 +70,30 @@ export class ProductoController {
         }
     }
 
+    seed = async (req, res) => {
+        const PRODUCTOS_INICIALES = [
+            { nombre: "Coca-Cola 1.5L", precio: 2500, cantidad: 50, categoria: "Bebidas" },
+            { nombre: "Agua Mineral 500ml", precio: 800, cantidad: 100, categoria: "Bebidas" },
+            { nombre: "Cerveza Quilmes 1L", precio: 3500, cantidad: 30, categoria: "Bebidas" },
+            { nombre: "Leche Entera 1L", precio: 1500, cantidad: 60, categoria: "Lacteos" },
+            { nombre: "Harina 000 1kg", precio: 1200, cantidad: 40, categoria: "Alimentos" },
+            { nombre: "Aceite Girasol 1L", precio: 6000, cantidad: 25, categoria: "Alimentos" },
+            { nombre: "Fideos Largos 500g", precio: 1000, cantidad: 45, categoria: "Alimentos" },
+            { nombre: "Arroz 1kg", precio: 1800, cantidad: 35, categoria: "Alimentos" },
+            { nombre: "Azucar 1kg", precio: 2000, cantidad: 30, categoria: "Alimentos" },
+            { nombre: "Yerba Mate 500g", precio: 3200, cantidad: 20, categoria: "Alimentos" }
+        ]
+
+        try {
+            const lista = Array.isArray(req.body) && req.body.length > 0 ? req.body : PRODUCTOS_INICIALES
+            const productosCreados = this.productoService.crearVarios(lista)
+
+            return res.status(201).json({ status: "success", data: productosCreados })
+        } catch (error) {
+            return this.manejarError(res, error)
+        }
+    }
+
     delete = async (req, res) => {
         try {
             const id = this.parsearId(req.params.id)
@@ -113,6 +138,32 @@ export class ProductoController {
             cantidad: body.cantidad,
             categoria: body.categoria
         }
+    }
+
+    extraerFiltros(query) {
+        const filtros = {}
+
+        if (query.precioMin !== undefined) {
+            const precioMin = Number(query.precioMin)
+            if (!Number.isFinite(precioMin)) {
+                throw new BadRequestError("precioMin debe ser un número válido")
+            }
+            filtros.precioMin = precioMin
+        }
+
+        if (query.precioMax !== undefined) {
+            const precioMax = Number(query.precioMax)
+            if (!Number.isFinite(precioMax)) {
+                throw new BadRequestError("precioMax debe ser un número válido")
+            }
+            filtros.precioMax = precioMax
+        }
+
+        if (query.categoria !== undefined) {
+            filtros.categoria = query.categoria
+        }
+
+        return filtros
     }
 
     extraerPaginacion(query) {

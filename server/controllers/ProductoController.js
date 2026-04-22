@@ -1,9 +1,5 @@
 import {
-    AppError,
     BadRequestError,
-    ConflictError,
-    NotFoundError,
-    UnprocessableEntityError
 } from "../errors/AppError.js"
 import { ProductoService } from "../services/ProductoService.js";
 
@@ -15,7 +11,7 @@ export class ProductoController {
     }
 
 
-    findAll = async (req, res) => {
+    findAll = async (req, res, next) => {
         try {
             const paginacion = this.extraerPaginacion(req.query)
             const filtros = this.extraerFiltros(req.query)
@@ -32,33 +28,33 @@ export class ProductoController {
                 }
             })
         } catch (error) {
-            return this.manejarError(res, error)
+            return next(error)
         }
     }
 
-    create = async (req, res) => {
+    create = async (req, res, next) => {
         try {
             const datosProducto = this.extraerYValidarBodyProducto(req.body)
             const productoCreado = this.productoService.crear(datosProducto)
 
             return res.status(201).json({ status: "success", data: productoCreado })
         } catch (error) {
-            return this.manejarError(res, error)
+            return next(error)
         }
     }
 
-    findById = async (req, res) => {
+    findById = async (req, res, next) => {
         try {
             const id = this.parsearId(req.params.id)
             const producto = this.productoService.obtenerPorId(id)
 
             return res.status(200).json({ status: "success", data: producto })
         } catch (error) {
-            return this.manejarError(res, error)
+            return next(error)
         }
     }
 
-    update = async (req, res) => {
+    update = async (req, res, next) => {
         try {
             const id = this.parsearId(req.params.id)
             const datosProducto = this.extraerYValidarBodyProducto(req.body)
@@ -66,11 +62,11 @@ export class ProductoController {
 
             return res.status(200).json({ status: "success", data: productoActualizado })
         } catch (error) {
-            return this.manejarError(res, error)
+            return next(error)
         }
     }
 
-    seed = async (req, res) => {
+    seed = async (req, res, next) => {
         const PRODUCTOS_INICIALES = [
             { nombre: "Coca-Cola 1.5L", precio: 2500, cantidad: 50, categoria: "Bebidas" },
             { nombre: "Agua Mineral 500ml", precio: 800, cantidad: 100, categoria: "Bebidas" },
@@ -90,18 +86,18 @@ export class ProductoController {
 
             return res.status(201).json({ status: "success", data: productosCreados })
         } catch (error) {
-            return this.manejarError(res, error)
+            return next(error)
         }
     }
 
-    delete = async (req, res) => {
+    delete = async (req, res, next) => {
         try {
             const id = this.parsearId(req.params.id)
             const productoEliminado = this.productoService.eliminar(id)
 
             return res.status(200).json({ status: "success", data: productoEliminado })
         } catch (error) {
-            return this.manejarError(res, error)
+            return next(error)
         }
     }
 
@@ -180,28 +176,5 @@ export class ProductoController {
         if (!Number.isInteger(numero) || numero <= 0) {
             throw new BadRequestError(`El parámetro ${parametro} debe ser un entero positivo`)
         }
-    }
-
-    manejarError(res, error) {
-        const message = error?.message || "Error interno"
-        const timestamp = error?.timestamp || new Date().toISOString()
-
-        if (error instanceof NotFoundError) {
-            return res.status(404).json({ status: "fail", message, timestamp })
-        }
-
-        if (error instanceof ConflictError) {
-            return res.status(409).json({ status: "fail", message, timestamp })
-        }
-
-        if (error instanceof BadRequestError) {
-            return res.status(400).json({ status: "fail", message, timestamp })
-        }
-
-        if (error instanceof UnprocessableEntityError || error instanceof AppError) {
-            return res.status(422).json({ status: "fail", message, timestamp })
-        }
-
-        return res.status(500).json({ status: "error", message: "Error interno del servidor", timestamp })
     }
 }

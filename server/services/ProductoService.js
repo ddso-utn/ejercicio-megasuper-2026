@@ -97,9 +97,11 @@ export class ProductoService {
 
     eliminar(id) {
         this.validarEnteroPositivo(id, "Id")
-        this.obtenerPorId(id)
+        const producto = this.obtenerPorId(id)
 
-        return this.productoRepository.eliminar(id)
+        producto.eliminado = true
+
+        return this.productoRepository.guardar(producto)
     }
 
     validarDatosProducto(datosProducto) {

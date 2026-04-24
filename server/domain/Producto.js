@@ -6,6 +6,7 @@ export class Producto {
   precio;
   cantidad;
   categoria;
+  eliminado;
   descuentos;
 
   constructor(nombre, precio, cantidad, categoria) {
@@ -18,6 +19,7 @@ export class Producto {
     this.precio = precio;
     this.cantidad = cantidad;
     this.categoria = categoria.trim();
+    this.eliminado = false;
     this.descuentos = [];
   }
 

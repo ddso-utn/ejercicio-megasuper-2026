@@ -12,11 +12,11 @@ export class ProductoRepository {
     }
 
     obtenerTodos() {
-        return Object.values(this.productos)
+        return Object.values(this.productos).filter((producto) => !producto.eliminado)
     }
 
     obtenerPaginados(numeroPagina, limitePorPagina, filtros = {}) {
-        let productos = Object.values(this.productos)
+        let productos = this.obtenerTodos()
 
         if (filtros.precioMin !== undefined) {
             productos = productos.filter((p) => p.precio >= filtros.precioMin)
@@ -56,18 +56,32 @@ export class ProductoRepository {
         return productos.map((producto) => this.guardar(producto))
     }
 
-    obtenerPorId(id) {
+    obtenerPorId(id, { incluirEliminados = false } = {}) {
         this.validarId(id)
 
-        return this.productos[id] ?? null
+        const producto = this.productos[id] ?? null
+
+        if (!producto) {
+            return null
+        }
+
+        if (!incluirEliminados && producto.eliminado) {
+            return null
+        }
+
+        return producto
     }
 
-    obtenerPorNombre(nombre) {
+    obtenerPorNombre(nombre, { incluirEliminados = false } = {}) {
         this.validarNombre(nombre)
         const nombreNormalizado = nombre.trim().toLowerCase()
 
         return (
             Object.values(this.productos).find((producto) => {
+                if (!incluirEliminados && producto.eliminado) {
+                    return false
+                }
+
                 return producto.nombre.trim().toLowerCase() === nombreNormalizado
             }) ?? null
         )

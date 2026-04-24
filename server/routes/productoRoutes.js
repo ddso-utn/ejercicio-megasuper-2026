@@ -8,15 +8,15 @@ const productoController = new ProductoController()
 const router = express.Router()
 
 router.route('/')
-	.get((req, res) => productoController.findAll(req, res))
-	.post((req, res) => productoController.create(req, res))
+	.get((req, res, next) => productoController.findAll(req, res, next))
+	.post((req, res, next) => productoController.create(req, res, next))
 
 router.route('/seed')
-	.post((req, res) => productoController.seed(req, res))
+	.post((req, res, next) => productoController.seed(req, res, next))
 
 router.route('/:id')
-	.get((req, res) => productoController.findById(req, res))
-	.put((req, res) => productoController.update(req, res))
-	.delete((req, res) => productoController.delete(req, res))
+	.get((req, res, next) => productoController.findById(req, res, next))
+	.put((req, res, next) => productoController.update(req, res, next))
+	.delete((req, res, next) => productoController.delete(req, res, next))
 
 export default router

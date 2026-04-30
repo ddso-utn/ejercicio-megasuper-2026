@@ -1,5 +1,4 @@
 import app from "./app.js"
-import dotenv from "dotenv"
 
 const port = process.env.PORT || 3000
 const host = 'localhost'

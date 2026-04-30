@@ -25,7 +25,7 @@ export class DescuentoPorCantidad {
   }
 
   valorDescontado(producto) {
-    const unidadesPagadas = Math.floor(cantidad / this.cantidadComprada) * this.cantidadPagada + producto.cantidad % this.cantidadComprada;
+    const unidadesPagadas = Math.floor(producto.cantidad / this.cantidadComprada) * this.cantidadPagada + producto.cantidad % this.cantidadComprada;
     return unidadesPagadas * producto.precio;
   }
 }

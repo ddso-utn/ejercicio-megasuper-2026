@@ -5,6 +5,11 @@ import router from "./routes/router.js"
 import { notFoundHandler } from "./middlewares/notFoundHandler.js"
 import { errorLogger } from "./middlewares/errorLogger.js"
 import { errorHandler } from "./middlewares/errorHandler.js"
+import { createRequire } from "module"
+import swaggerUi from "swagger-ui-express"
+
+const require = createRequire(import.meta.url)
+const swaggerSpec = require("./docs/swaggerSpec.json")
 
 dotenv.config()
 
@@ -12,6 +17,7 @@ const app = express()
 
 app.use(express.json())
 app.use(cors())
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 app.use(router)
 
 app.use(notFoundHandler)

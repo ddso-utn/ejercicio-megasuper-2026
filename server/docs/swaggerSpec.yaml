@@ -1,0 +1,404 @@
+openapi: "3.0.3"
+info:
+  title: MegaSuper
+  description: "API REST para la gestión de productos del supermercado MegaSuper. Permite crear, consultar, actualizar y eliminar productos con soporte de paginación y filtros."
+  version: "1.0.0"
+
+tags:
+  - name: Productos
+    description: Operaciones sobre productos
+
+paths:
+  /productos:
+    get:
+      tags:
+        - Productos
+      summary: Listar productos
+      description: "Devuelve una lista paginada de productos activos. Admite filtros por precio y categoría."
+      parameters:
+        - name: page
+          in: query
+          description: "Número de página (debe ser entero positivo)"
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: "Cantidad de productos por página (debe ser entero positivo)"
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+        - name: precioMin
+          in: query
+          description: "Precio mínimo para filtrar (debe ser número positivo)"
+          schema:
+            type: number
+            minimum: 0
+        - name: precioMax
+          in: query
+          description: "Precio máximo para filtrar (debe ser número positivo, mayor que precioMin)"
+          schema:
+            type: number
+            minimum: 0
+        - name: categoria
+          in: query
+          description: "Categoría para filtrar (búsqueda exacta, sin distinguir mayúsculas)"
+          schema:
+            type: string
+            example: Bebidas
+      responses:
+        200:
+          description: Lista de productos obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Producto"
+                  paginacion:
+                    $ref: "#/components/schemas/Paginacion"
+        400:
+          $ref: "#/components/responses/BadRequest"
+
+    post:
+      tags:
+        - Productos
+      summary: Crear producto
+      description: "Crea un nuevo producto. El nombre debe ser único."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductoInput"
+            example:
+              nombre: Yerba Tradicional
+              precio: 3200
+              cantidad: 20
+              categoria: Alimentos
+      responses:
+        201:
+          description: Producto creado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    $ref: "#/components/schemas/Producto"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        409:
+          $ref: "#/components/responses/Conflict"
+        422:
+          $ref: "#/components/responses/UnprocessableEntity"
+
+  /productos/seed:
+    post:
+      tags:
+        - Productos
+      summary: Cargar productos de prueba
+      description: "Inserta un conjunto de productos en lote. Si no se envía cuerpo, usa una lista de 10 productos por defecto."
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/ProductoInput"
+            example:
+              - nombre: Coca-Cola 1.5L
+                precio: 2500
+                cantidad: 50
+                categoria: Bebidas
+              - nombre: Agua Mineral 500ml
+                precio: 800
+                cantidad: 100
+                categoria: Bebidas
+      responses:
+        201:
+          description: Productos cargados correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Producto"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        409:
+          $ref: "#/components/responses/Conflict"
+        422:
+          $ref: "#/components/responses/UnprocessableEntity"
+
+  /productos/{id}:
+    get:
+      tags:
+        - Productos
+      summary: Obtener producto por ID
+      description: Devuelve un producto activo por su ID.
+      parameters:
+        - $ref: "#/components/parameters/ProductoId"
+      responses:
+        200:
+          description: Producto encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    $ref: "#/components/schemas/Producto"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        404:
+          $ref: "#/components/responses/NotFound"
+
+    put:
+      tags:
+        - Productos
+      summary: Actualizar producto
+      description: "Actualiza todos los campos de un producto existente. El nuevo nombre debe ser único."
+      parameters:
+        - $ref: "#/components/parameters/ProductoId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductoInput"
+            example:
+              nombre: Yerba Tradicional Premium
+              precio: 4000
+              cantidad: 15
+              categoria: Alimentos
+      responses:
+        200:
+          description: Producto actualizado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    $ref: "#/components/schemas/Producto"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+        422:
+          $ref: "#/components/responses/UnprocessableEntity"
+
+    delete:
+      tags:
+        - Productos
+      summary: Eliminar producto (baja lógica)
+      description: "Marca el producto como eliminado (`eliminado: true`) sin borrarlo de la base de datos."
+      parameters:
+        - $ref: "#/components/parameters/ProductoId"
+      responses:
+        200:
+          description: Producto eliminado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    $ref: "#/components/schemas/Producto"
+              example:
+                status: success
+                data:
+                  id: 1
+                  nombre: Coca-Cola 1.5L
+                  precio: 2500
+                  cantidad: 50
+                  categoria: Bebidas
+                  eliminado: true
+                  descuentos: []
+        400:
+          $ref: "#/components/responses/BadRequest"
+        404:
+          $ref: "#/components/responses/NotFound"
+
+components:
+  schemas:
+    Producto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nombre:
+          type: string
+          example: Coca-Cola 1.5L
+        precio:
+          type: number
+          example: 2500
+        cantidad:
+          type: integer
+          example: 50
+        categoria:
+          type: string
+          example: Bebidas
+        eliminado:
+          type: boolean
+          example: false
+        descuentos:
+          type: array
+          items:
+            $ref: "#/components/schemas/Descuento"
+
+    ProductoInput:
+      type: object
+      required:
+        - nombre
+        - precio
+        - cantidad
+        - categoria
+      properties:
+        nombre:
+          type: string
+          minLength: 3
+          example: Yerba Tradicional
+          description: "Nombre único del producto (mínimo 3 caracteres)"
+        precio:
+          type: number
+          exclusiveMinimum: 0
+          example: 3200
+          description: "Precio del producto (debe ser mayor a 0)"
+        cantidad:
+          type: integer
+          minimum: 1
+          example: 20
+          description: "Stock disponible (entero positivo)"
+        categoria:
+          type: string
+          minLength: 3
+          example: Alimentos
+          description: "Categoría del producto (mínimo 3 caracteres)"
+
+    Descuento:
+      type: object
+      properties:
+        porcentaje:
+          type: number
+          example: 10
+        descripcion:
+          type: string
+          example: Descuento por temporada
+
+    Paginacion:
+      type: object
+      properties:
+        numeroPagina:
+          type: integer
+          example: 1
+        limitePorPagina:
+          type: integer
+          example: 10
+        totalPaginas:
+          type: integer
+          example: 3
+        totalProductos:
+          type: integer
+          example: 25
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: fail
+        message:
+          type: string
+          example: Descripción del error
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-04-30T12:00:00.000Z"
+
+  parameters:
+    ProductoId:
+      name: id
+      in: path
+      required: true
+      description: "ID del producto (entero positivo)"
+      schema:
+        type: integer
+        minimum: 1
+        example: 1
+
+  responses:
+    BadRequest:
+      description: "Solicitud inválida — parámetros o cuerpo mal formados"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            status: fail
+            message: "El campo 'precio' debe ser un número mayor a 0"
+            timestamp: "2026-04-30T12:00:00.000Z"
+
+    NotFound:
+      description: Producto no encontrado o eliminado
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            status: fail
+            message: Producto con id 99 no encontrado
+            timestamp: "2026-04-30T12:00:00.000Z"
+
+    Conflict:
+      description: Ya existe un producto con ese nombre
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            status: fail
+            message: "Ya existe un producto con el nombre 'Coca-Cola 1.5L'"
+            timestamp: "2026-04-30T12:00:00.000Z"
+
+    UnprocessableEntity:
+      description: Los valores del cuerpo no cumplen las reglas de negocio
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            status: fail
+            message: El nombre debe tener al menos 3 caracteres
+            timestamp: "2026-04-30T12:00:00.000Z"

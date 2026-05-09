@@ -1,0 +1,148 @@
+{
+  "info": {
+    "_postman_id": "a863f97c-efd4-460c-b6ca-d65c20e79194",
+    "name": "Extras - PRACTICA ODM Y PERSISTENCIA",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "21228147"
+  },
+  "item": [
+    {
+      "name": "AGREGACION - RESxALOJ",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/reserva/estadisticas/reservas-por-alojamiento",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "reserva",
+            "estadisticas",
+            "reservas-por-alojamiento"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET ALL PAGINADO",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/alojamiento/paginado?page=1&limit=6",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "alojamiento",
+            "paginado"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "6"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "LOGICA SOBRE OBJETO - PRECIO TOTAL",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/reserva/69fe3239f82a81ec1592581b/total",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "reserva",
+            "69fe3239f82a81ec1592581b",
+            "total"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "SOFT DELETE",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/alojamiento/soft/69fe484cf82a81ec1592581e",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "alojamiento",
+            "soft",
+            "69fe484cf82a81ec1592581e"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

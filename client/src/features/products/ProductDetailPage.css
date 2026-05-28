@@ -100,7 +100,15 @@
 
 .agregar-container{
   display: flex;
-  justify-content: right;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem 1rem 1rem;
+}
+
+.agregar:disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {

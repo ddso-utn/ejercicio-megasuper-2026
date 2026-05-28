@@ -1,10 +1,36 @@
-import { useParams } from "react-router-dom";
-import { productos } from "../../mockdata/Productos";
-import "./ProductDetailPage.css";
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ButtonGroup, Button } from '@mui/material';
+import { productos } from '../../mockdata/Productos';
+import './ProductDetailPage.css';
 
-const ProductDetailPage = () => {
+const conUnidades = (unidades, producto) => ({ ...producto, unidades });
+
+const ProductDetailPage = ({ carrito, actualizarCarrito }) => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const producto = productos.find((p) => p.id === parseInt(id));
+
+  const [unidades, setUnidades] = useState(0);
+
+  useEffect(() => {
+    setUnidades(0);
+  }, [id, carrito]);
+
+  const incrementarUnidades = () => {
+    setUnidades(unidades + 1);
+  };
+
+  const decrementarUnidades = () => {
+    if (unidades > 0) {
+      setUnidades(unidades - 1);
+    }
+  };
+
+  const agregarAlCarrito = () => {
+    actualizarCarrito(conUnidades(unidades, producto));
+    navigate('/');
+  };
 
   if (!producto) {
     return (
@@ -50,7 +76,14 @@ const ProductDetailPage = () => {
       </div>
 
       <div className="agregar-container">
-        <button className="agregar">Agregar al carrito</button>
+        <ButtonGroup variant="outlined" aria-label="selector de unidades">
+          <Button onClick={decrementarUnidades} disabled={unidades === 0}>-</Button>
+          <Button disabled>{unidades}</Button>
+          <Button onClick={incrementarUnidades}>+</Button>
+        </ButtonGroup>
+        <button className="agregar" onClick={agregarAlCarrito} disabled={unidades === 0}>
+          Agregar al carrito
+        </button>
       </div>
     </div>
   );

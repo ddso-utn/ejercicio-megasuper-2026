@@ -1,12 +1,15 @@
-import { useState } from "react";
-import "./ProductCarousel.css";
-import { productos } from "../../mockdata/Productos";
-import CarouselItem from "../productItem/CarouselItem";
+import React, { useState, useEffect } from 'react';
+import './ProductCarousel.css';
+import CarouselItem from '../productItem/CarouselItem';
 
 const VISIBLES = 3;
 
-export default function ProductCarousel() {
+export default function ProductCarousel({ productos }) {
   const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    setIndex(0);
+  }, [productos]);
 
   if (!Array.isArray(productos) || productos.length === 0) {
     return <p className="carousel-empty">No hay productos disponibles</p>;
@@ -24,9 +27,9 @@ export default function ProductCarousel() {
     if (puedeAvanzar) setIndex(index + 1);
   };
 
-    const desplazamiento = `translateX(-${index * (100 / VISIBLES)}%)`;
+  const desplazamiento = `translateX(-${index * (100 / VISIBLES)}%)`;
 
- return (
+  return (
     <div className="carousel-container">
       <h2 className="carousel-title">Ofertas de la semana</h2>
       <div className="carousel-wrapper">

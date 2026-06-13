@@ -3,9 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaShoppingCart } from 'react-icons/fa';
 import './Navbar.css';
 import '../../index.css';
+import { useCarrito } from '../../context/CarritoContext.jsx';
 
-const Navbar = ({ carrito }) => {
+const Navbar = () => {
   const navigate = useNavigate();
+  const { carrito } = useCarrito();
   const [cantUnidades, setCantUnidades] = useState(0);
 
   const irACheckout = () => {

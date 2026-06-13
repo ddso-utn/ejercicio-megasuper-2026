@@ -3,10 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ButtonGroup, Button } from '@mui/material';
 import { productos } from '../../mockdata/Productos';
 import './ProductDetailPage.css';
+import { useCarrito } from '../../context/CarritoContext.jsx';
 
 const conUnidades = (unidades, producto) => ({ ...producto, unidades });
 
-const ProductDetailPage = ({ carrito, actualizarCarrito }) => {
+const ProductDetailPage = () => {
+  const { carrito, actualizarCarrito } = useCarrito();
   const navigate = useNavigate();
   const { id } = useParams();
   const producto = productos.find((p) => p.id === parseInt(id));

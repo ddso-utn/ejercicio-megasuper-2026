@@ -1,8 +1,59 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, TextField, Button } from '@mui/material';
-import './Checkout.css';
+import styled from '@emotion/styled';
+import { theme } from '../../theme.js';
 import { useCarrito } from '../../context/CarritoContext.jsx';
+
+const Root = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+`;
+
+const FormContainer = styled(Card)`
+  && {
+    width: 100%;
+    max-width: 600px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: ${theme.colors.primaryGreen};
+      text-align: center;
+    }
+  }
+`;
+
+const CarritoResumen = styled.div`
+  width: 100%;
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+`;
+
+const CarritoItem = styled.div`
+  padding: 0.25rem 0;
+  font-size: 0.95rem;
+  color: #333;
+`;
+
+const StyledForm = styled.form`
+  width: 100%;
+`;
+
+const Actions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+`;
 
 const inicializarCampo = (requerido = true) => ({ valor: '', requerido });
 
@@ -48,23 +99,23 @@ const Checkout = () => {
   };
 
   return (
-    <div className="root">
-      <Card className="form-container">
+    <Root>
+      <FormContainer>
         <h1>Ya casi estamos...</h1>
 
-        <div className="carrito-resumen">
+        <CarritoResumen>
           {carrito.length === 0 ? (
             <p>El carrito está vacío</p>
           ) : (
             carrito.map((producto, index) => (
-              <div key={index} className="carrito-item">
+              <CarritoItem key={index}>
                 {producto.nombre}: {producto.unidades} unidad/es
-              </div>
+              </CarritoItem>
             ))
           )}
-        </div>
+        </CarritoResumen>
 
-        <form onSubmit={(e) => e.preventDefault()}>
+        <StyledForm onSubmit={(e) => e.preventDefault()}>
           <TextField
             value={valorDe('nombre')}
             onChange={setValorDe('nombre')}
@@ -111,7 +162,7 @@ const Checkout = () => {
             margin="normal"
             required
           />
-          <div className="actions">
+          <Actions>
             <Button variant="outlined" onClick={handleCancelar}>Cancelar</Button>
             <Button
               disabled={!camposCompletos || carrito.length === 0}
@@ -120,10 +171,10 @@ const Checkout = () => {
             >
               Guardar
             </Button>
-          </div>
-        </form>
-      </Card>
-    </div>
+          </Actions>
+        </StyledForm>
+      </FormContainer>
+    </Root>
   );
 };
 

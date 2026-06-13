@@ -1,11 +1,12 @@
 import { Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { createTheme, ThemeProvider } from '@mui/material';
-import React, { useState } from 'react';
+import React from 'react';
 import Layout from './features/layout/Layout.jsx';
 import Home from './features/home/Home.jsx';
 import ProductDetailPage from './features/products/ProductDetailPage.jsx';
 import Checkout from './features/checkout/Checkout.jsx';
+import { CarritoProvider } from './context/CarritoContext.jsx';
 
 const theme = createTheme({
   palette: {
@@ -19,41 +20,17 @@ const theme = createTheme({
 });
 
 function App() {
-  const [carrito, setCarrito] = useState([]);
-
-  const actualizarCarrito = (producto) => {
-    setCarrito([...carrito, producto]);
-  };
-
-  const limpiarCarrito = () => {
-    setCarrito([]);
-  };
-
   return (
     <ThemeProvider theme={theme}>
-      <Routes>
-        <Route path="/" element={<Layout carrito={carrito} />}>
-          <Route index element={<Home />} />
-          <Route
-            path="/productos/:id"
-            element={
-              <ProductDetailPage
-                carrito={carrito}
-                actualizarCarrito={actualizarCarrito}
-              />
-            }
-          />
-          <Route
-            path="/checkout"
-            element={
-              <Checkout
-                carrito={carrito}
-                limpiarCarrito={limpiarCarrito}
-              />
-            }
-          />
-        </Route>
-      </Routes>
+      <CarritoProvider>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="/productos/:id" element={<ProductDetailPage />} />
+            <Route path="/checkout" element={<Checkout />} />
+          </Route>
+        </Routes>
+      </CarritoProvider>
     </ThemeProvider>
   );
 }

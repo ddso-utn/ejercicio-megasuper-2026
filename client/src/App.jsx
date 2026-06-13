@@ -1,27 +1,27 @@
 import { Routes, Route } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { createTheme, ThemeProvider } from '@mui/material';
 import React from 'react';
+import { theme as appTheme } from './theme.js';
 import Layout from './features/layout/Layout.jsx';
 import Home from './features/home/Home.jsx';
 import ProductDetailPage from './features/products/ProductDetailPage.jsx';
 import Checkout from './features/checkout/Checkout.jsx';
 import { CarritoProvider } from './context/CarritoContext.jsx';
 
-const theme = createTheme({
+const muiTheme = createTheme({
   palette: {
     primary: {
-      main: '#ff8c00'
+      main: appTheme.colors.primaryOrange
     }
   },
   typography: {
-    fontFamily: "'Poppins', sans-serif"
+    fontFamily: appTheme.fonts.primary
   }
 });
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={muiTheme}>
       <CarritoProvider>
         <Routes>
           <Route path="/" element={<Layout />}>

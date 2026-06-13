@@ -1,9 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Spinner } from 'react-bootstrap';
+import { CircularProgress } from '@mui/material';
+import styled from '@emotion/styled';
 import ProductSearchBar from '../../components/productSearchBar/ProductSearchBar';
 import ProductCarousel from '../../components/productCarousel/ProductCarousel';
 import { getProductsSlowly } from '../../service/productsService.js';
-import './Home.css';
+
+const HomeBody = styled.div`
+  display: flex;
+  position: relative;
+  top: -1.5rem;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`;
+
+const SpinnerWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem;
+`;
 
 const Home = () => {
   const [productos, setProductos] = useState([]);
@@ -34,13 +50,13 @@ const Home = () => {
 
   return (
     <>
-      <div className="home-body">
+      <HomeBody>
         <ProductSearchBar filtrarProductos={filtrarProductos} />
-      </div>
+      </HomeBody>
       {!productos.length ? (
-        <div className="spinner">
-          <Spinner />
-        </div>
+        <SpinnerWrapper>
+          <CircularProgress />
+        </SpinnerWrapper>
       ) : (
         <div>
           <ProductCarousel productos={productosFiltrados} />

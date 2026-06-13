@@ -3,8 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaShoppingCart } from 'react-icons/fa';
 import './Navbar.css';
 import '../../index.css';
+import { useCart } from '../../context/CartContext.jsx';
 
-const Navbar = ({ carrito }) => {
+const Navbar = () => {
+  const { carrito } = useCart();
   const navigate = useNavigate();
   const [cantUnidades, setCantUnidades] = useState(0);
 

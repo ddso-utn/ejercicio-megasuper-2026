@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, TextField, Button } from '@mui/material';
 import './Checkout.css';
+import { useCart } from '../../context/CartContext.jsx';
 
 const inicializarCampo = (requerido = true) => ({ valor: '', requerido });
 
@@ -13,7 +14,8 @@ const inicializarCampos = () => ({
   repetirEmail: inicializarCampo()
 });
 
-const Checkout = ({ carrito, limpiarCarrito }) => {
+const Checkout = () => {
+  const { carrito, limpiarCarrito } = useCart();
   const navigate = useNavigate();
   const [campos, setCampos] = useState(inicializarCampos());
 

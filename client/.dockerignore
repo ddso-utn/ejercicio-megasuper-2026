@@ -1,0 +1,27 @@
+# Dependencias — se instalan dentro del contenedor
+node_modules
+
+# Artefactos de build previos — se regeneran en el contenedor
+build/
+
+# Variables de entorno
+.env
+.env.*
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Tests
+coverage/
+
+# Documentación
+README.md
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Configuración de openspec (documentación interna)
+openspec/

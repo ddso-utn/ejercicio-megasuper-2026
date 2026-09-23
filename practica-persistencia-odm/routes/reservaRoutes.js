@@ -1,4 +1,6 @@
 import { ReservaController } from "../controllers/reservaController.js";
+import { validate } from "../middlewares/validate.js";
+import { crearReservaSchema, actualizarReservaSchema } from "../validations/reservaValidation.js";
 import express from 'express';
 
 const pathReserva = "/reserva";
@@ -11,7 +13,7 @@ export default function reservaRoutes(getController) {
         controller.findAll(req, res, next);
     });
 
-    router.post(pathReserva, (req, res, next) => {
+    router.post(pathReserva, validate(crearReservaSchema), (req, res, next) => {
         controller.create(req, res, next);
     });
 
@@ -19,7 +21,7 @@ export default function reservaRoutes(getController) {
         controller.findById(req, res, next);
     });
 
-    router.put(pathReserva + "/:id", (req, res, next) => {
+    router.put(pathReserva + "/:id", validate(actualizarReservaSchema), (req, res, next) => {
         controller.update(req, res, next);
     });
 

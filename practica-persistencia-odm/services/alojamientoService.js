@@ -23,10 +23,6 @@ export class AlojamientoService {
     async create(data) {
         const { nombre, precioPorNoche } = data;
 
-        if (!nombre || !precioPorNoche) {
-            throw new ValidationError('Nombre y precioPorNoche son requeridos');
-        }
-
         const existente = await this.alojamientoRepository.findByName(nombre);
         if (existente) {
             throw new ConflictError(`Ya existe un alojamiento con el nombre ${nombre}`);

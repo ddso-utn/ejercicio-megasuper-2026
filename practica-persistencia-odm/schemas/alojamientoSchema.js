@@ -2,21 +2,10 @@ import mongoose from 'mongoose';
 import { Alojamiento } from '../models/entities/alojamiento.js';
 
 const alojamientoSchema = new mongoose.Schema({
-    nombre:{
-        type: String,
-        required: true,
-        trim:true
-    },
-    precioPorNoche:{
-        type: Number,
-        required: true,
-        min: 0
-    },
+    nombre: { type: String, required: true, trim: true },
+    precioPorNoche: { type: Number, required: true, min: 0 },
     //ESTO ES PARA EL SOFT DELETE
-    eliminado: {
-        type: Boolean,
-        default: false
-    }
+    eliminado: { type: Boolean, default: false }
 },{
     timestamps: true,
     //versionKey: false,

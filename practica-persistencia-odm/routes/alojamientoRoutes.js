@@ -1,17 +1,19 @@
 import { AlojamientoController } from "../controllers/alojamientoController.js";
+import { validate } from "../middlewares/validate.js";
+import { crearAlojamientoSchema, actualizarAlojamientoSchema } from "../validations/alojamientoValidation.js";
 import express from 'express'
 
 const pathAlojamiento = "/alojamiento"
 
 export default function alojamientoRoutes(getController) {
-    const router = express.Router() 
+    const router = express.Router()
     const controller = getController(AlojamientoController)
 
     router.get(pathAlojamiento, (req,res, next) => {
         controller.findAll(req,res, next)
     })
 
-    router.post(pathAlojamiento, (req, res,next) => {
+    router.post(pathAlojamiento, validate(crearAlojamientoSchema), (req, res,next) => {
         controller.create(req,res, next)
     })
 
@@ -27,7 +29,7 @@ export default function alojamientoRoutes(getController) {
         controller.delete(req,res, next)
     })
 
-    router.put(pathAlojamiento + "/:id", (req, res, next) => {
+    router.put(pathAlojamiento + "/:id", validate(actualizarAlojamientoSchema), (req, res, next) => {
         controller.update(req,res, next)
     })
 

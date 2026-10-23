@@ -6,10 +6,12 @@ export class Producto {
   precio;
   cantidad;
   categoria;
+  descripcion;
+  imagen;
   eliminado;
   descuentos;
 
-  constructor(nombre, precio, cantidad, categoria) {
+  constructor(nombre, precio, cantidad, categoria, descripcion = "", imagen = null) {
     this.validarNombre(nombre);
     this.validarPrecio(precio);
     this.validarCantidad(cantidad);
@@ -19,6 +21,8 @@ export class Producto {
     this.precio = precio;
     this.cantidad = cantidad;
     this.categoria = categoria.trim();
+    this.descripcion = descripcion;
+    this.imagen = imagen;
     this.eliminado = false;
     this.descuentos = [];
   }

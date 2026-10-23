@@ -88,6 +88,22 @@ describe("Productos API - Integración", () => {
             )
         })
 
+        test("debe pasar el filtro de nombre al repositorio", async () => {
+            productoRepository.obtenerPaginados.mockReturnValue({
+                productos: [],
+                totalProductos: 0,
+            })
+
+            const response = await request(app).get("/productos?nombre=leche")
+
+            expect(response.status).toBe(200)
+            expect(productoRepository.obtenerPaginados).toHaveBeenCalledWith(
+                1,
+                10,
+                { nombre: "leche" }
+            )
+        })
+
         test("debe retornar 400 si precioMin es mayor que precioMax", async () => {
             const response = await request(app).get("/productos?precioMin=2000&precioMax=500")
 

@@ -28,6 +28,10 @@ export class ProductoRepository {
             const categoriaNormalizada = filtros.categoria.trim().toLowerCase()
             productos = productos.filter((p) => p.categoria.trim().toLowerCase() === categoriaNormalizada)
         }
+        if (filtros.nombre !== undefined) {
+            const nombreNormalizado = filtros.nombre.trim().toLowerCase()
+            productos = productos.filter((p) => p.nombre.toLowerCase().includes(nombreNormalizado))
+        }
 
         const inicio = (numeroPagina - 1) * limitePorPagina
         const fin = inicio + limitePorPagina

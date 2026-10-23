@@ -1,6 +1,6 @@
 export default [
     {
-        ignores: ["node_modules/**", "index.js", "funciones.js"]
+        ignores: ["node_modules/**", "index.js", "funciones.js", "client/**"]
     },
     {
         languageOptions: {

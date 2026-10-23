@@ -56,7 +56,9 @@ export class ProductoService {
             datosProducto.nombre,
             datosProducto.precio,
             datosProducto.cantidad,
-            datosProducto.categoria
+            datosProducto.categoria,
+            datosProducto.descripcion,
+            datosProducto.imagen
         )
 
         return this.productoRepository.guardar(producto)
@@ -70,7 +72,7 @@ export class ProductoService {
         const productos = listaProductos.map((datos) => {
             this.validarDatosProducto(datos)
             this.validarNombreDisponible(datos.nombre)
-            return new Producto(datos.nombre, datos.precio, datos.cantidad, datos.categoria)
+            return new Producto(datos.nombre, datos.precio, datos.cantidad, datos.categoria, datos.descripcion, datos.imagen)
         })
 
         return this.productoRepository.guardarTodos(productos)
@@ -88,7 +90,9 @@ export class ProductoService {
             datosProducto.nombre,
             datosProducto.precio,
             datosProducto.cantidad,
-            datosProducto.categoria
+            datosProducto.categoria,
+            datosProducto.descripcion,
+            datosProducto.imagen
         )
 
         productoActualizado.id = productoExistente.id
@@ -137,7 +141,7 @@ export class ProductoService {
         }
     }
 
-    validarFiltros({ precioMin, precioMax, categoria } = {}) {
+    validarFiltros({ precioMin, precioMax, categoria, nombre } = {}) {
         if (precioMin !== undefined && precioMin <= 0) {
             throw new BadRequestError("precioMin debe ser mayor a 0")
         }
@@ -149,6 +153,9 @@ export class ProductoService {
         }
         if (categoria !== undefined && (typeof categoria !== "string" || categoria.trim().length === 0)) {
             throw new BadRequestError("La categoría debe ser una cadena de texto no vacía")
+        }
+        if (nombre !== undefined && (typeof nombre !== "string" || nombre.trim().length === 0)) {
+            throw new BadRequestError("El nombre debe ser una cadena de texto no vacía")
         }
     }
 

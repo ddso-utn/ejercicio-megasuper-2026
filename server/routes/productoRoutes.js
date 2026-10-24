@@ -1,7 +1,15 @@
 import express from "express"
 import { ProductoController } from "../controllers/ProductoController.js"
+import { ProductoService } from "../services/ProductoService.js"
+import { ProductoRepository } from "../repositories/ProductoRepository.js"
+import { PRODUCTOS_INICIALES } from "../data/productosIniciales.js"
 
-const productoController = new ProductoController()
+// El repositorio es en memoria: arranca con productos de ejemplo
+const productoRepository = new ProductoRepository()
+const productoService = new ProductoService({ productoRepository })
+productoService.crearVarios(PRODUCTOS_INICIALES)
+
+const productoController = new ProductoController({ productoService })
 
 const router = express.Router()
 

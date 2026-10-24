@@ -51,3 +51,10 @@ html, body, #root {
   all: unset;
   cursor: pointer;
 }
+
+.spinner{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem;
+}

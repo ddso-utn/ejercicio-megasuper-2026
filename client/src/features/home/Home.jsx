@@ -1,51 +1,100 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap';
+import { Alert, Button, Pagination } from '@mui/material';
 import ProductSearchBar from '../../components/productSearchBar/ProductSearchBar';
-import ProductCarousel from '../../components/productCarousel/ProductCarousel';
-import { getProductsSlowly } from '../../service/productsService.js';
+import ProductGrid from '../../components/productGrid/ProductGrid';
+import { obtenerProductos } from '../../service/productsService.js';
+import { mensajeDeError } from '../../service/api.js';
 import './Home.css';
+
+const PRODUCTOS_POR_PAGINA = 4;
 
 const Home = () => {
   const [productos, setProductos] = useState([]);
-  const [productosFiltrados, setProductosFiltrados] = useState([]);
-
-  const filtrarProductos = (searchText) => {
-    if (searchText.trim() === '') {
-      setProductosFiltrados(productos);
-    } else {
-      const texto = searchText.toLowerCase();
-      const filtered = productos.filter(producto =>
-        producto.nombre.toLowerCase().includes(texto) ||
-        producto.categoria.toLowerCase().includes(texto)
-      );
-      setProductosFiltrados(filtered);
-    }
-  };
+  const [pagina, setPagina] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(0);
+  const [filtros, setFiltros] = useState({ nombre: '', categoria: '' });
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
 
   const cargarProductos = async () => {
-    const productosCargados = await getProductsSlowly();
-    setProductos(productosCargados);
-    setProductosFiltrados(productosCargados);
+    setCargando(true);
+    setError(null);
+    try {
+      const resultado = await obtenerProductos({
+        pagina,
+        limite: PRODUCTOS_POR_PAGINA,
+        ...filtros
+      });
+      setProductos(resultado.productos);
+      setTotalPaginas(resultado.totalPaginas);
+    } catch (e) {
+      setError(mensajeDeError(e));
+    } finally {
+      setCargando(false);
+    }
   };
 
   useEffect(() => {
     cargarProductos();
-  }, []);
+  }, [pagina, filtros]);
+
+  const buscarProductos = (nuevosFiltros) => {
+    setFiltros(nuevosFiltros);
+    setPagina(1);
+  };
+
+  const renderCatalogo = () => {
+    if (cargando) {
+      return (
+        <div className="spinner">
+          <Spinner />
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <Alert
+          severity="error"
+          action={
+            <Button color="inherit" size="small" onClick={cargarProductos}>
+              Reintentar
+            </Button>
+          }
+        >
+          {error}
+        </Alert>
+      );
+    }
+
+    return <ProductGrid productos={productos} />;
+  };
 
   return (
     <>
       <div className="home-body">
-        <ProductSearchBar filtrarProductos={filtrarProductos} />
+        <ProductSearchBar buscarProductos={buscarProductos} />
       </div>
-      {!productos.length ? (
-        <div className="spinner">
-          <Spinner />
+      <div className="catalogo">
+        <div className="catalogo-header">
+          <h2 className="catalogo-titulo">Nuestros productos</h2>
+          <Link to="/productos/nuevo">+ Nuevo producto</Link>
         </div>
-      ) : (
-        <div>
-          <ProductCarousel productos={productosFiltrados} />
-        </div>
-      )}
+        {renderCatalogo()}
+        {totalPaginas > 1 && (
+          <div className="paginacion">
+            <Pagination
+              count={totalPaginas}
+              page={pagina}
+              onChange={(e, nuevaPagina) => setPagina(nuevaPagina)}
+              disabled={cargando}
+              color="primary"
+            />
+          </div>
+        )}
+      </div>
     </>
   );
 };

@@ -6,6 +6,7 @@ import Layout from './features/layout/Layout.jsx';
 import Home from './features/home/Home.jsx';
 import ProductDetailPage from './features/products/ProductDetailPage.jsx';
 import Checkout from './features/checkout/Checkout.jsx';
+import NuevoProducto from './features/products/NuevoProducto.jsx';
 
 const theme = createTheme({
   palette: {
@@ -34,6 +35,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout carrito={carrito} />}>
           <Route index element={<Home />} />
+          <Route path="/productos/nuevo" element={<NuevoProducto />} />
           <Route
             path="/productos/:id"
             element={

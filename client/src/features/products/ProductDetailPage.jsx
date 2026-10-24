@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ButtonGroup, Button } from '@mui/material';
-import { Spinner } from 'react-bootstrap';
+import { ButtonGroup, Button, CircularProgress } from '@mui/material';
 import { obtenerProductoPorId } from '../../service/productsService';
 import { mensajeDeError } from '../../service/api';
 import './ProductDetailPage.css';
@@ -62,7 +61,7 @@ const ProductDetailPage = ({ carrito, actualizarCarrito }) => {
   if (cargando) {
     return (
       <div className="spinner">
-        <Spinner />
+        <CircularProgress />
       </div>
     );
   }

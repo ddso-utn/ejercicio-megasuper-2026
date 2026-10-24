@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Spinner } from 'react-bootstrap';
-import { Alert, Button, Pagination } from '@mui/material';
+import { Alert, Button, CircularProgress, Pagination } from '@mui/material';
 import ProductSearchBar from '../../components/productSearchBar/ProductSearchBar';
 import ProductGrid from '../../components/productGrid/ProductGrid';
 import { obtenerProductos } from '../../service/productsService.js';
@@ -49,7 +48,7 @@ const Home = () => {
     if (cargando) {
       return (
         <div className="spinner">
-          <Spinner />
+          <CircularProgress />
         </div>
       );
     }
@@ -80,7 +79,9 @@ const Home = () => {
       <div className="catalogo">
         <div className="catalogo-header">
           <h2 className="catalogo-titulo">Nuestros productos</h2>
-          <Link to="/productos/nuevo">+ Nuevo producto</Link>
+          <Button component={Link} to="/productos/nuevo" variant="contained">
+            + Nuevo producto
+          </Button>
         </div>
         {renderCatalogo()}
         {totalPaginas > 1 && (
